@@ -1937,16 +1937,68 @@ void GcodeGeneration::makeSmooth()
 			curr_node = (QMeshNode*)WayPointPatch->GetNodeList().GetNext(Pos);
 			if (curr_node->GetIndexNo() == 0 ||  curr_node->Jump_preSecEnd) {
 				prev_node = curr_node;
+				double normal_curr[3];
+				curr_node->GetNormal(normal_curr[0], normal_curr[1], normal_curr[2]);
+				curr_node->SetOrigNormal(normal_curr[0], normal_curr[1], normal_curr[2]);
 				continue;
 			}
 
-			if (curr_node->GetIndexNo() == totalNodes - 1 || curr_node->Jump_nextSecStart) continue;
+			if (curr_node->GetIndexNo() == totalNodes - 1 || curr_node->Jump_nextSecStart)
+			{
+				double normal_curr[3];
+				curr_node->GetNormal(normal_curr[0], normal_curr[1], normal_curr[2]);
+				curr_node->SetOrigNormal(normal_curr[0], normal_curr[1], normal_curr[2]);
+				continue;
+			}
+			double normal_prev[3];
+			prev_node->GetNormal(normal_prev[0], normal_prev[1], normal_prev[2]);
+
+			double normal_curr[3];
+			curr_node->GetNormal(normal_curr[0], normal_curr[1], normal_curr[2]);
+
+			next_node = (QMeshNode*)WayPointPatch->GetNodeList().GetAt(Pos->next);
+			double normal_next[3];
+			next_node->GetNormal(normal_next[0], normal_next[1], normal_next[2]);
+
+			curr_node->SetOrigNormal(normal_curr[0], normal_curr[1], normal_curr[2]);
+
+			if (!isSmooth(normal_prev, normal_curr, normal_next))
+			 {
+				
+				normalAverage(normal_prev, normal_curr, normal_next);
+			 }
+			
+
+			
+
 
 		}
 
 	}
 	
 }
+
+bool GcodeGeneration::isSmooth(double* normal_prev, double* normal_curr, double* normal_next)
+{
+	double ang_threshold = 1.57;
+	
+	Eigen::Vector3d prev(normal_prev[0], normal_prev[1], normal_prev[2]);
+	Eigen::Vector3d curr(normal_curr[0], normal_curr[1], normal_curr[2]);
+	Eigen::Vector3d nex(normal_next[0], normal_next[1], normal_next[2]);
+
+	double ang_pc = abs(acos(prev.dot(curr)));
+
+	double ang_cn = abs(acos(curr.dot(nex)));
+
+	//if max()
+	
+	return true;
+}
+
+void GcodeGeneration::normalAverage(double* normal_prev, double* normal_curr, double* normal_next)
+{}
+
+
 
 void GcodeGeneration::_get_GraphNode_List(QMeshPatch* patch, std::vector<collision_Node>& graph_Node) {
 

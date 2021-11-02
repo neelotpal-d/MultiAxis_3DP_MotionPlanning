@@ -65,6 +65,8 @@ public:
 
 	//Final smoothing of path <Added by Neelotpal>
 	void makeSmooth();
+	bool isSmooth(double* normal_prev, double* normal_curr, double* normal_next);
+	void normalAverage(double* normal_prev, double* normal_curr, double* normal_next);
 
 
 	// Gcode writing

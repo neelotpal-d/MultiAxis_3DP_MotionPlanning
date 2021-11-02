@@ -50,9 +50,9 @@ public:
     void CalNormal();
     void CalNormal(double normal[]);
     void GetNormal(double &nx, double &ny, double &nz) {nx=m_normal[0]; ny=m_normal[1]; nz=m_normal[2];};
-	void GetOrigNormal(double& nx, double& ny, double& nz) { nx = m_normal_last[0]; ny = m_normal_last[1]; nz = m_normal_last[2]; };
+	void GetOrigNormal(double& nx, double& ny, double& nz) { nx = m_normal_orig[0]; ny = m_normal_orig[1]; nz = m_normal_orig[2]; };
     void SetNormal(double nx, double ny, double nz) {m_normal[0]=nx; m_normal[1]=ny; m_normal[2]=nz;};
-	void SetOrigNormal(double nx, double ny, double nz) { m_normal_last[0] = nx; m_normal_last[1] = ny; m_normal_last[2] = nz; };
+	void SetOrigNormal(double nx, double ny, double nz) {m_normal_orig[0] = nx; m_normal_orig[1] = ny; m_normal_orig[2] = nz; };
 
 
     void SetBoundaryDis(double dist);
@@ -171,7 +171,7 @@ private:
 	GLKObList tetraList;	// a list of nodes coincident with this node (QMeshNode)
 
     double m_normal[3];
-	double m_nomral_orig[3]; //to store original waypoint normlal <Added by Neelotpal>
+	double m_normal_orig[3]; //to store original waypoint normlal <Added by Neelotpal>
     double m_weight;
     double coord3D_FLP[3]; //For Keep the FLProcessData
 
