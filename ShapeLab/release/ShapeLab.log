@@ -40,20 +40,9 @@ C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\ShapeLab\GcodeGeneration.
 C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\ShapeLab\GcodeGeneration.cpp(1905,82): warning C4018: '>': signed/unsigned mismatch
 C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\ShapeLab\GcodeGeneration.cpp(1932,35): warning C4018: '<': signed/unsigned mismatch
 C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\ShapeLab\GcodeGeneration.cpp(1932,82): warning C4018: '>': signed/unsigned mismatch
-C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\ShapeLab\GcodeGeneration.cpp(1936,20): warning C4189: 'pos': local variable is initialized but not referenced
-C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\ShapeLab\GcodeGeneration.cpp(1983,9): warning C4189: 'ang_threshold': local variable is initialized but not referenced
-C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\ShapeLab\GcodeGeneration.cpp(1989,9): warning C4189: 'ang_pc': local variable is initialized but not referenced
-C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\ShapeLab\GcodeGeneration.cpp(1991,9): warning C4189: 'ang_cn': local variable is initialized but not referenced
-C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\ShapeLab\GcodeGeneration.cpp(1998,87): warning C4100: 'normal_next': unreferenced formal parameter
-C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\ShapeLab\GcodeGeneration.cpp(1998,66): warning C4100: 'normal_curr': unreferenced formal parameter
-C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\ShapeLab\GcodeGeneration.cpp(1998,45): warning C4100: 'normal_prev': unreferenced formal parameter
-C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\ShapeLab\GcodeGeneration.cpp(2151,27): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\ShapeLab\GcodeGeneration.cpp(2295,35): warning C4018: '<': signed/unsigned mismatch
-C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\ShapeLab\GcodeGeneration.cpp(2295,82): warning C4018: '>': signed/unsigned mismatch
+C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\ShapeLab\GcodeGeneration.cpp(1937,20): warning C4189: 'pos': local variable is initialized but not referenced
+C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\ShapeLab\GcodeGeneration.cpp(2167,27): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\ShapeLab\GcodeGeneration.cpp(2311,35): warning C4018: '<': signed/unsigned mismatch
+C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\ShapeLab\GcodeGeneration.cpp(2311,82): warning C4018: '>': signed/unsigned mismatch
 C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\ShapeLab\GcodeGeneration.cpp(1226): warning C4715: 'GcodeGeneration::removeDir': not all control paths return a value
-  moc_MainWindow.cpp
-C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\GLKLib.h(163,35): warning C4100: 'bVertexNormalShading': unreferenced formal parameter
-C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\GLKLib.h(214,63): warning C4100: 'even_type': unreferenced formal parameter
-C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\GLKLib.h(214,39): warning C4100: 'event': unreferenced formal parameter
-C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\QMeshLib\PolygenMesh.h(23,2): warning C4091: 'typedef ': ignored on left of 'mesh_type' when no variable is declared
   ShapeLab.vcxproj -> C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\ShapeLab\release\ShapeLab.exe

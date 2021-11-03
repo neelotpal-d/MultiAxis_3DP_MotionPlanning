@@ -1933,9 +1933,12 @@ void GcodeGeneration::makeSmooth()
 
 		int totalNodes = WayPointPatch->GetNodeNumber();
 		QMeshNode *curr_node, *prev_node, *next_node;
+
 		for (GLKPOSITION pos = WayPointPatch->GetNodeList().GetHeadPosition(); Pos;) {
-			curr_node = (QMeshNode*)WayPointPatch->GetNodeList().GetNext(Pos);
-			if (curr_node->GetIndexNo() == 0 ||  curr_node->Jump_preSecEnd) {
+			curr_node = (QMeshNode*)WayPointPatch->GetNodeList().GetNext(Pos); //get the current node and advance the Pos pointer to next position [see GLKObList]
+
+			//if first point in the list or jumpsection, continue from the next
+			if (curr_node->GetIndexNo() == 0 || curr_node->Jump_preSecEnd) {
 				prev_node = curr_node;
 				double normal_curr[3];
 				curr_node->GetNormal(normal_curr[0], normal_curr[1], normal_curr[2]);
@@ -1943,6 +1946,7 @@ void GcodeGeneration::makeSmooth()
 				continue;
 			}
 
+			//if last point, continue from next list/jump section
 			if (curr_node->GetIndexNo() == totalNodes - 1 || curr_node->Jump_nextSecStart)
 			{
 				double normal_curr[3];
@@ -1950,6 +1954,9 @@ void GcodeGeneration::makeSmooth()
 				curr_node->SetOrigNormal(normal_curr[0], normal_curr[1], normal_curr[2]);
 				continue;
 			}
+
+			if (prev_node == nullptr) { std::cout << "prev_node is empty!!\n"; exit(1); } //bug check
+
 			double normal_prev[3];
 			prev_node->GetNormal(normal_prev[0], normal_prev[1], normal_prev[2]);
 
@@ -1963,15 +1970,12 @@ void GcodeGeneration::makeSmooth()
 			curr_node->SetOrigNormal(normal_curr[0], normal_curr[1], normal_curr[2]);
 
 			if (!isSmooth(normal_prev, normal_curr, normal_next))
-			 {
-				
-				normalAverage(normal_prev, normal_curr, normal_next);
-			 }
-			
+			{
 
-			
+				normalAverage(normal_prev, normal_curr, normal_next); //smooth the orientation by simple average method
 
 
+			}
 		}
 
 	}
@@ -1980,23 +1984,35 @@ void GcodeGeneration::makeSmooth()
 
 bool GcodeGeneration::isSmooth(double* normal_prev, double* normal_curr, double* normal_next)
 {
-	double ang_threshold = 1.57;
+	double ang_threshold = 1.57/2; //tool orientation angle difference threshold
 	
-	Eigen::Vector3d prev(normal_prev[0], normal_prev[1], normal_prev[2]);
+	Eigen::Vector3d prev(normal_prev[0], normal_prev[1], normal_prev[2]); //use eignen vector3d type for easier vector operations
 	Eigen::Vector3d curr(normal_curr[0], normal_curr[1], normal_curr[2]);
 	Eigen::Vector3d nex(normal_next[0], normal_next[1], normal_next[2]);
 
 	double ang_pc = abs(acos(prev.dot(curr)));
+	double ang_cn = abs(acos(curr.dot(nex)));  //find the angles between orientation at current point with that of previous and next points
 
-	double ang_cn = abs(acos(curr.dot(nex)));
-
-	//if max()
+	if (max(ang_pc, ang_cn) > ang_threshold) return false; //if any angle is more than threshold return NOT Smooth
 	
 	return true;
 }
 
 void GcodeGeneration::normalAverage(double* normal_prev, double* normal_curr, double* normal_next)
-{}
+{
+	
+	Eigen::Vector3d prev(normal_prev[0], normal_prev[1], normal_prev[2]); //use eignen vector3d type for easier vector operations
+	Eigen::Vector3d curr(normal_curr[0], normal_curr[1], normal_curr[2]);
+	Eigen::Vector3d nex(normal_next[0], normal_next[1], normal_next[2]);
+	
+	curr = (prev + curr + nex) / 3; //smooth the orientation by simple average method
+	curr.normalize(); 
+
+	normal_curr[0] = curr[0];
+	normal_curr[1] = curr[1];
+	normal_curr[2] = curr[2];
+
+}
 
 
 
