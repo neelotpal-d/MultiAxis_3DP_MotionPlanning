@@ -19,7 +19,8 @@ typedef enum mesh_type {
     CNC_PARTS,
     TET,
     UNDEFINED,
-    Test
+    Test,
+    N_SURF
 };
 
 class PolygenMesh : public GLKEntity

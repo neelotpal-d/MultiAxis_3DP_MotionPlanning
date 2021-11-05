@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[30];
-    char stringdata0[440];
+    QByteArrayData data[31];
+    char stringdata0[454];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -60,7 +60,8 @@ QT_MOC_LITERAL(25, 325, 18), // "runGcodeSimulation"
 QT_MOC_LITERAL(26, 344, 30), // "runContinuousCollisionChecking"
 QT_MOC_LITERAL(27, 375, 21), // "changeWaypointDisplay"
 QT_MOC_LITERAL(28, 397, 21), // "viewAllWaypointLayers"
-QT_MOC_LITERAL(29, 419, 20) // "special_Draw_Command"
+QT_MOC_LITERAL(29, 419, 13), // "viewOnlyLayer"
+QT_MOC_LITERAL(30, 433, 20) // "special_Draw_Command"
 
     },
     "MainWindow\0doTimerGcodeMoving\0\0open\0"
@@ -74,7 +75,7 @@ QT_MOC_LITERAL(29, 419, 20) // "special_Draw_Command"
     "runCollisionElimination\0runWriteGcode\0"
     "runGcodeSimulation\0runContinuousCollisionChecking\0"
     "changeWaypointDisplay\0viewAllWaypointLayers\0"
-    "special_Draw_Command"
+    "viewOnlyLayer\0special_Draw_Command"
 };
 #undef QT_MOC_LITERAL
 
@@ -84,7 +85,7 @@ static const uint qt_meta_data_MainWindow[] = {
        8,       // revision
        0,       // classname
        0,    0, // classinfo
-      23,   14, // methods
+      24,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -92,29 +93,30 @@ static const uint qt_meta_data_MainWindow[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    0,  129,    2, 0x0a /* Public */,
-       3,    0,  130,    2, 0x08 /* Private */,
-       4,    0,  131,    2, 0x08 /* Private */,
-       5,    0,  132,    2, 0x08 /* Private */,
-       6,    0,  133,    2, 0x08 /* Private */,
-       7,    1,  134,    2, 0x08 /* Private */,
-       9,    0,  137,    2, 0x08 /* Private */,
-      10,    0,  138,    2, 0x08 /* Private */,
-      11,    1,  139,    2, 0x08 /* Private */,
-      14,    1,  142,    2, 0x08 /* Private */,
-      17,    0,  145,    2, 0x08 /* Private */,
-      18,    0,  146,    2, 0x08 /* Private */,
-      19,    0,  147,    2, 0x08 /* Private */,
-      20,    0,  148,    2, 0x08 /* Private */,
-      21,    0,  149,    2, 0x08 /* Private */,
-      22,    0,  150,    2, 0x08 /* Private */,
-      23,    0,  151,    2, 0x08 /* Private */,
-      24,    0,  152,    2, 0x08 /* Private */,
-      25,    0,  153,    2, 0x08 /* Private */,
-      26,    0,  154,    2, 0x08 /* Private */,
-      27,    0,  155,    2, 0x08 /* Private */,
-      28,    0,  156,    2, 0x08 /* Private */,
-      29,    0,  157,    2, 0x08 /* Private */,
+       1,    0,  134,    2, 0x0a /* Public */,
+       3,    0,  135,    2, 0x08 /* Private */,
+       4,    0,  136,    2, 0x08 /* Private */,
+       5,    0,  137,    2, 0x08 /* Private */,
+       6,    0,  138,    2, 0x08 /* Private */,
+       7,    1,  139,    2, 0x08 /* Private */,
+       9,    0,  142,    2, 0x08 /* Private */,
+      10,    0,  143,    2, 0x08 /* Private */,
+      11,    1,  144,    2, 0x08 /* Private */,
+      14,    1,  147,    2, 0x08 /* Private */,
+      17,    0,  150,    2, 0x08 /* Private */,
+      18,    0,  151,    2, 0x08 /* Private */,
+      19,    0,  152,    2, 0x08 /* Private */,
+      20,    0,  153,    2, 0x08 /* Private */,
+      21,    0,  154,    2, 0x08 /* Private */,
+      22,    0,  155,    2, 0x08 /* Private */,
+      23,    0,  156,    2, 0x08 /* Private */,
+      24,    0,  157,    2, 0x08 /* Private */,
+      25,    0,  158,    2, 0x08 /* Private */,
+      26,    0,  159,    2, 0x08 /* Private */,
+      27,    0,  160,    2, 0x08 /* Private */,
+      28,    0,  161,    2, 0x08 /* Private */,
+      29,    0,  162,    2, 0x08 /* Private */,
+      30,    0,  163,    2, 0x08 /* Private */,
 
  // slots: parameters
     QMetaType::Void,
@@ -127,6 +129,7 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void,
     QMetaType::Void, 0x80000000 | 12,   13,
     QMetaType::Void, 0x80000000 | 15,   16,
+    QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -172,7 +175,8 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 19: _t->runContinuousCollisionChecking(); break;
         case 20: _t->changeWaypointDisplay(); break;
         case 21: _t->viewAllWaypointLayers(); break;
-        case 22: _t->special_Draw_Command(); break;
+        case 22: _t->viewOnlyLayer(); break;
+        case 23: _t->special_Draw_Command(); break;
         default: ;
         }
     }
@@ -207,13 +211,13 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 23)
+        if (_id < 24)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 23;
+        _id -= 24;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 23)
+        if (_id < 24)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 23;
+        _id -= 24;
     }
     return _id;
 }

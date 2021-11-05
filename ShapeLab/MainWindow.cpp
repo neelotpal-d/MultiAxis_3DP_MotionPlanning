@@ -550,6 +550,7 @@ void MainWindow::readGcodeSourceData() {
     readPlatformfile("printingPlatform_plane.obj");
 
     viewAllWaypointLayers();
+	//viewOnlyLayer();
 
     std::cout << "Read Gcode Source Data__ END.\n" << std::endl;
 
@@ -568,7 +569,17 @@ void MainWindow::clearScreen(){
 };
 
 void MainWindow::smoothNormal() {
-	GcodeGene->makeSmooth();
+	
+	std::cout << "making tool oriention smooth...\n";
+	PolygenMesh* normSurf = _detectPolygenMesh(N_SURF, "normalSurface", true);
+	if (normSurf == nullptr) {
+		normSurf = _buildPolygenMesh(N_SURF, "normalSurface");
+	}
+	else
+		normSurf->ClearAll();
+	GcodeGene->makeSmooth(normSurf);
+	std::cout <<"One cycle of nomal smoothing complete!\n";
+	viewOnlyLayer();
 };
 
 void MainWindow::runDHWcalculation() {
@@ -600,7 +611,7 @@ void MainWindow::runDHWcalculation() {
 
 	if (ui->checkBox_varyDistance->isChecked() && operationTime == 0) {
 		GcodeGene->calDistance();
-		GcodeGene->initialSmooth();
+		//GcodeGene->initialSmooth();
 		operationTime++;
 	}
 
@@ -610,7 +621,19 @@ void MainWindow::runDHWcalculation() {
 
 	if (ui->checkBox_TestDHW_Switch->isChecked())	GcodeGene->test_DHW();
 
+
 	viewAllWaypointLayers();
+
+	PolygenMesh* normSurf = _detectPolygenMesh(N_SURF, "normalSurface", true);
+	if (normSurf == nullptr) {
+		normSurf = _buildPolygenMesh(N_SURF, "normalSurface");
+	}
+	else
+		normSurf->ClearAll();
+	GcodeGene->initialNormalSurface(normSurf);
+	viewOnlyLayer();
+
+	
 }
 
 void MainWindow::runSingularityOpt() {
@@ -792,6 +815,27 @@ void MainWindow::viewAllWaypointLayers() {
 	pGLK->Zoom_All_in_View();
 }
 
+void MainWindow::viewOnlyLayer() {
+	for (GLKPOSITION pos = polygenMeshList.GetHeadPosition(); pos != nullptr;) {
+		PolygenMesh* polygenMesh = (PolygenMesh*)polygenMeshList.GetNext(pos);
+		if ("Waypoints" != polygenMesh->getModelName() && "Slices" != polygenMesh->getModelName() && "normalSurface" != polygenMesh->getModelName())
+		{
+			for (GLKPOSITION posMesh = polygenMesh->GetMeshList().GetHeadPosition(); posMesh != nullptr;) {
+				QMeshPatch* Patch = (QMeshPatch*)polygenMesh->GetMeshList().GetNext(posMesh);
+				Patch->drawThisPatch = false;
+			}
+		}
+		else {
+			for (GLKPOSITION posMesh = polygenMesh->GetMeshList().GetHeadPosition(); posMesh != nullptr;) {
+				QMeshPatch* Patch = (QMeshPatch*)polygenMesh->GetMeshList().GetNext(posMesh);
+				Patch->drawThisPatch = true;
+			}
+		}
+	}
+	pGLK->refresh(true);
+	//pGLK->Zoom_All_in_View();
+}
+
 void MainWindow::changeWaypointDisplay() {
 
 	bool single = ui->checkBox_EachLayerSwitch->isChecked();
@@ -946,6 +990,7 @@ void MainWindow::readSliceData(std::string sliceSetName) {
 			if (supportFlag == string::npos)	slice->isSupportLayer = false;
 			else	slice->isSupportLayer = true;
 
+			//choose the method for reading files with different types
 			//choose the method for reading files with different types
 			string targetFileType = ".obj";
 			string fileName = sliceSetFileCell[i].data();

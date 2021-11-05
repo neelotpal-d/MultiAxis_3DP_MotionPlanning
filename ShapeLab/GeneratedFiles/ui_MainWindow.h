@@ -455,7 +455,7 @@ public:
         doubleSpinBox_Xmove->setFont(font2);
         doubleSpinBox_Xmove->setMinimum(-150.000000000000000);
         doubleSpinBox_Xmove->setMaximum(150.000000000000000);
-        doubleSpinBox_Xmove->setValue(100.000000000000000);
+        doubleSpinBox_Xmove->setValue(0.000000000000000);
 
         horizontalLayout_11->addWidget(doubleSpinBox_Xmove);
 
@@ -471,7 +471,7 @@ public:
         doubleSpinBox_Ymove->setFont(font2);
         doubleSpinBox_Ymove->setMinimum(-150.000000000000000);
         doubleSpinBox_Ymove->setMaximum(150.000000000000000);
-        doubleSpinBox_Ymove->setValue(100.000000000000000);
+        doubleSpinBox_Ymove->setValue(0.000000000000000);
 
         horizontalLayout_11->addWidget(doubleSpinBox_Ymove);
 
@@ -486,7 +486,7 @@ public:
         doubleSpinBox_Zmove->setObjectName(QString::fromUtf8("doubleSpinBox_Zmove"));
         doubleSpinBox_Zmove->setFont(font2);
         doubleSpinBox_Zmove->setMinimum(-99.989999999999995);
-        doubleSpinBox_Zmove->setValue(30.000000000000000);
+        doubleSpinBox_Zmove->setValue(0.000000000000000);
 
         horizontalLayout_11->addWidget(doubleSpinBox_Zmove);
 

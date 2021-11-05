@@ -117,6 +117,7 @@ private slots:
     /*This is for Display*/
     void changeWaypointDisplay();
     void viewAllWaypointLayers();
+    void viewOnlyLayer();
     void special_Draw_Command();
 
     /*This is for function test*/

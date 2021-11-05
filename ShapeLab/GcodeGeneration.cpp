@@ -1924,19 +1924,52 @@ void GcodeGeneration::graph_Search_Shortest_Path() {
 
 }
 
-void GcodeGeneration::makeSmooth()
+
+void GcodeGeneration::initialNormalSurface(PolygenMesh* normSurf)
 {
 	for (GLKPOSITION Pos = polygenMesh_Waypoints->GetMeshList().GetHeadPosition(); Pos;) {
 		QMeshPatch* WayPointPatch = (QMeshPatch*)polygenMesh_Waypoints->GetMeshList().GetNext(Pos);
+		int itr = 0;
+
+		if (WayPointPatch->GetIndexNo() < LayerInd_From || WayPointPatch->GetIndexNo() > LayerInd_To) continue;
+
+		int totalNodes = WayPointPatch->GetNodeNumber();
+		QMeshNode* curr_node, * prev_node, * next_node;
+
+		//GLKPOSITION pos = WayPointPatch->GetNodeList().GetHeadPosition()
+
+		float* vertex_array = (float*)malloc(sizeof(float) * ((totalNodes * 2) * 3));
+		unsigned int* face_array = (unsigned int*)malloc(sizeof(unsigned int) * ((totalNodes * 2) - 2) * 3);
+		buildSurfaceFromNormals(WayPointPatch, vertex_array, face_array);
+
+		QMeshPatch* surf = new QMeshPatch;
+		polygenMesh_NormalSurface = normSurf;
+		polygenMesh_NormalSurface->GetMeshList().AddTail(surf);
+
+
+		std::cout << vertex_array[0] << std::endl;
+		surf->constructionFromVerFaceTable(totalNodes * 2, vertex_array, totalNodes * 2 - 2, face_array);
+
+	}
+}
+
+void GcodeGeneration::makeSmooth(PolygenMesh* normSurf)
+{
+	for (GLKPOSITION Pos = polygenMesh_Waypoints->GetMeshList().GetHeadPosition(); Pos;) {
+		QMeshPatch* WayPointPatch = (QMeshPatch*)polygenMesh_Waypoints->GetMeshList().GetNext(Pos);
+		int itr = 0;
 		
 		if (WayPointPatch->GetIndexNo() < LayerInd_From || WayPointPatch->GetIndexNo() > LayerInd_To) continue;
 
 		int totalNodes = WayPointPatch->GetNodeNumber();
 		QMeshNode *curr_node, *prev_node, *next_node;
 
-		for (GLKPOSITION pos = WayPointPatch->GetNodeList().GetHeadPosition(); Pos;) {
-			curr_node = (QMeshNode*)WayPointPatch->GetNodeList().GetNext(Pos); //get the current node and advance the Pos pointer to next position [see GLKObList]
-
+		//GLKPOSITION pos = WayPointPatch->GetNodeList().GetHeadPosition()
+		
+		for (GLKPOSITION pos = WayPointPatch->GetNodeList().GetHeadPosition();pos;) {
+			
+			curr_node = (QMeshNode*)WayPointPatch->GetNodeList().GetNext(pos); //get the current node and advance the Pos pointer to next position [see GLKObList]
+			std::cout << "In Loop " << curr_node->GetIndexNo() << "\n";
 			//if first point in the list or jumpsection, continue from the next
 			if (curr_node->GetIndexNo() == 0 || curr_node->Jump_preSecEnd) {
 				prev_node = curr_node;
@@ -1963,37 +1996,112 @@ void GcodeGeneration::makeSmooth()
 			double normal_curr[3];
 			curr_node->GetNormal(normal_curr[0], normal_curr[1], normal_curr[2]);
 
-			next_node = (QMeshNode*)WayPointPatch->GetNodeList().GetAt(Pos->next);
+			next_node = (QMeshNode*)WayPointPatch->GetNodeList().GetAt(pos);
 			double normal_next[3];
 			next_node->GetNormal(normal_next[0], normal_next[1], normal_next[2]);
 
 			curr_node->SetOrigNormal(normal_curr[0], normal_curr[1], normal_curr[2]);
 
+			std::cout << " " << normal_curr[0] << " " << normal_curr[1] << " " << normal_curr[2] << "\n\n";
 			if (!isSmooth(normal_prev, normal_curr, normal_next))
 			{
 
+				std::cout << "one non-smooth point detected..\n"; //bug-check
 				normalAverage(normal_prev, normal_curr, normal_next); //smooth the orientation by simple average method
+				/*Rewrite the X,Y,Z,B,C values for the new orientation*/
+				curr_node->SetNormal(normal_curr[0], normal_curr[1], normal_curr[2]);
+
 
 
 			}
+			prev_node = curr_node;
+			
+
+			
 		}
+		
+		float* vertex_array = (float*)malloc(sizeof(float) * ((totalNodes * 2) * 3));
+		unsigned int* face_array = (unsigned int*)malloc(sizeof(unsigned int) * ((totalNodes * 2) - 2) * 3);
+		buildSurfaceFromNormals(WayPointPatch,vertex_array,face_array);
+
+		QMeshPatch* surf = new QMeshPatch;
+		polygenMesh_NormalSurface = normSurf;
+		polygenMesh_NormalSurface->GetMeshList().AddTail(surf);
+
+
+		std::cout << vertex_array[0] << std::endl;
+		surf->constructionFromVerFaceTable(totalNodes * 2, vertex_array, totalNodes * 2 - 2, face_array);
 
 	}
+
+
 	
+	
+}
+
+
+void GcodeGeneration::buildSurfaceFromNormals(QMeshPatch* WayPointPatch, float* vertex_array, unsigned int* face_array)
+{
+	QMeshPatch* waypointPatch = WayPointPatch;
+	int node_number = waypointPatch->GetNodeNumber();
+	
+	float len = 15.0f;
+
+	int index = 0;
+	for (GLKPOSITION pos = waypointPatch->GetNodeList().GetHeadPosition(); pos;)
+	{
+		QMeshNode* node = (QMeshNode*)waypointPatch->GetNodeList().GetNext(pos);
+		
+		double coord[3];
+		double normal[3];
+		
+		node->GetCoord3D(coord[0], coord[1], coord[2]);
+		node->GetNormal(normal[0], normal[1], normal[2]);
+
+		vertex_array[index++] = coord[0];
+		vertex_array[index++] = coord[1];
+		vertex_array[index++] = coord[2];
+
+		vertex_array[index++] = coord[0]+len*normal[0];
+		vertex_array[index++] = coord[1]+len*normal[1];
+		vertex_array[index++] = coord[2]+len*normal[2];
+
+		
+	}
+
+	int total_vertices = node_number * 2;
+
+	index = 0;
+	for (int i = 0; i < total_vertices - 3; )
+	{
+		face_array[index++] = i+2;
+		face_array[index++] = i + 1;
+		face_array[index++] = i;
+
+		face_array[index++] = i + 3;
+		face_array[index++] = i + 1;
+		face_array[index++] = i + 2;
+
+		i = i + 2;
+	}
+
+
+
 }
 
 bool GcodeGeneration::isSmooth(double* normal_prev, double* normal_curr, double* normal_next)
 {
-	double ang_threshold = 1.57/2; //tool orientation angle difference threshold
+	double ang_threshold = acos(0)/10; //tool orientation angle difference threshold
 	
 	Eigen::Vector3d prev(normal_prev[0], normal_prev[1], normal_prev[2]); //use eignen vector3d type for easier vector operations
 	Eigen::Vector3d curr(normal_curr[0], normal_curr[1], normal_curr[2]);
 	Eigen::Vector3d nex(normal_next[0], normal_next[1], normal_next[2]);
 
-	double ang_pc = abs(acos(prev.dot(curr)));
-	double ang_cn = abs(acos(curr.dot(nex)));  //find the angles between orientation at current point with that of previous and next points
+	double ang_pc = abs(acos(prev.dot(curr)/(prev.norm()*curr.norm())));
+	double ang_cn = abs(acos(curr.dot(nex)/(nex.norm() * curr.norm())));  //find the angles between orientation at current point with that of previous and next points
 
-	if (max(ang_pc, ang_cn) > ang_threshold) return false; //if any angle is more than threshold return NOT Smooth
+	
+	if (max(ang_pc, ang_cn) > ang_threshold) { /*bug-check*/ std::cout << "angle:" << max(ang_pc, ang_cn) << "\n"; return false; } //if any angle is more than threshold return NOT Smooth
 	
 	return true;
 }

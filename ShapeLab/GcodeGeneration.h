@@ -64,9 +64,11 @@ public:
 	void graph_Search_Shortest_Path();
 
 	//Final smoothing of path <Added by Neelotpal>
-	void makeSmooth();
+	void makeSmooth(PolygenMesh* normSurf);
 	bool isSmooth(double* normal_prev, double* normal_curr, double* normal_next);
 	void normalAverage(double* normal_prev, double* normal_curr, double* normal_next);
+	void buildSurfaceFromNormals(QMeshPatch* WayPointPatch, float* vertex_array, unsigned int* face_array);
+	void initialNormalSurface(PolygenMesh* normSurf);
 
 
 	// Gcode writing
@@ -111,6 +113,7 @@ private:
 	PolygenMesh* polygenMesh_Waypoints = NULL;
 	PolygenMesh* polygenMesh_ExtruderHead = NULL;
 	PolygenMesh* polygenMesh_Platform = NULL;
+	PolygenMesh* polygenMesh_NormalSurface = NULL; //added by Neelotpal
 
 	double E3_Xoff = 0.0, E3_Yoff = 0.0;   // support extruder offset
 	double lambda = 0.0; // singularity tilte angle

@@ -127,6 +127,33 @@ void PolygenMesh::_buildDrawShadeList(bool bVertexNormalShading)
     }
     
     /*------------- Draw Face -------------*/
+    if (this->meshType == N_SURF) {
+        for (GLKPOSITION Pos = meshList.GetHeadPosition(); Pos != NULL; ) {
+            QMeshPatch* mesh = (QMeshPatch*)(meshList.GetNext(Pos));
+            float rr, gg, bb;
+
+            if (mesh->drawThisPatch == false) continue;
+
+            glBegin(GL_TRIANGLES);
+            for (GLKPOSITION PosFace = (mesh->GetFaceList()).GetHeadPosition(); PosFace != NULL;) {
+                QMeshFace* face = (QMeshFace*)((mesh->GetFaceList()).GetNext(PosFace));
+
+                if (mesh->isSupportLayer) {
+                    glColor3f(0.8, 0.8, 0.8);
+                }
+                else {
+                    //_changeValueToColor(mesh->GetIndexNo(), rr, gg, bb);
+                    glColor3f(0.4, 0.5, 0.6);
+                }
+                this->drawSingleFace(face);
+
+            }
+            glEnd();
+        }
+    }
+
+
+    /*------------- Draw Face -------------*/
     if (this->meshType == CNC_PARTS) {
 
         for (GLKPOSITION Pos = meshList.GetHeadPosition(); Pos != NULL; ) {
