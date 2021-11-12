@@ -583,7 +583,9 @@ void MainWindow::smoothNormal() {
 	}
 	else
 		normSurf->ClearAll();
-	GcodeGene->makeSmooth(normSurf);
+	bool doCheckCollision = false;
+	if (ui->checkBox_smoothingCollision->isChecked()) doCheckCollision = true;
+	GcodeGene->makeSmooth(normSurf,doCheckCollision);
 	std::cout <<"One cycle of nomal smoothing complete!\n";
 	viewOnlyLayer();
 };
@@ -614,18 +616,20 @@ void MainWindow::runDHWcalculation() {
 	);
 
 	std::cout << "Finish building and initialization.\n" << std::endl;
-
+	
 	if (ui->checkBox_varyDistance->isChecked() && operationTime == 0) {
 		GcodeGene->calDistance();
+		GcodeGene->removeIntitialCollision(ui->checkBox_initialCollision->isChecked());
 		//GcodeGene->initialSmooth();
 		operationTime++;
 	}
-
+	std::cout << "I am here!!\n";
 	if (ui->checkBox_varyHeight->isChecked())		GcodeGene->calHeight();
 
 	if (ui->checkBox_varyWidth->isChecked()) 		GcodeGene->calWidth();
 
 	if (ui->checkBox_TestDHW_Switch->isChecked())	GcodeGene->test_DHW();
+
 
 
 	viewAllWaypointLayers();
@@ -851,6 +855,8 @@ void MainWindow::changeWaypointDisplay() {
 
 	for (GLKPOSITION pos = polygenMeshList.GetHeadPosition(); pos != nullptr;) {
 		PolygenMesh* polygenMesh = (PolygenMesh*)polygenMeshList.GetNext(pos);
+		
+		
 		if ("Waypoints" != polygenMesh->getModelName()
 			&& "Slices" != polygenMesh->getModelName() && "normalSurface" != polygenMesh->getModelName())
 			continue;
@@ -861,6 +867,10 @@ void MainWindow::changeWaypointDisplay() {
 			QMeshPatch* Patch = (QMeshPatch*)polygenMesh->GetMeshList().GetNext(posMesh);
 
 			Patch->drawThisPatch = false;
+			if ("normalSurface" == polygenMesh->getModelName()) {
+				Patch->drawThisPatch = false;
+				continue;
+			}
 
 			if (index >= startLayerIndex) {
 				if (single == true) {

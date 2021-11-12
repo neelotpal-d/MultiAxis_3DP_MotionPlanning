@@ -64,12 +64,14 @@ public:
 	void graph_Search_Shortest_Path();
 
 	//Final smoothing of path <Added by Neelotpal>
-	void makeSmooth(PolygenMesh* normSurf);
+	void makeSmooth(PolygenMesh* normSurf, bool doCheckCollision);
 	bool isSmooth(double* normal_prev, double* normal_curr, double* normal_next);
 	void normalAverage(double* normal_prev, double* normal_curr, double* normal_next, double& alpha);
 	void buildSurfaceFromNormals(QMeshPatch* WayPointPatch, float* vertex_array, unsigned int* face_array);
 	void initialNormalSurface(PolygenMesh* normSurf);
-	bool isColliding(double* start_normal, QMeshNode* start_node, double* end_normal, QMeshNode* end_node, QMeshPatch* WayPointPatch);
+	bool isCollidingEdge(double* start_normal, QMeshNode* start_node, double* end_normal, QMeshNode* end_node, QMeshPatch* WayPointPatch);
+	void removeIntitialCollision(bool eliminateCollision);
+	bool isCollidingNode(Eigen::Vector3d norm, QMeshNode* Node, QMeshPatch* WayPointPatch);
 
 
 	// Gcode writing

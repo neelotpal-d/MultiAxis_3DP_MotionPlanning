@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1325</width>
+    <width>1306</width>
     <height>1070</height>
    </rect>
   </property>
@@ -847,6 +847,20 @@
       </layout>
      </item>
      <item>
+      <widget class="QCheckBox" name="checkBox_initialCollision">
+       <property name="text">
+        <string>Initial Collision Detection</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="checkBox_smoothingCollision">
+       <property name="text">
+        <string>Detect Collision while smoothing</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="pushButton_calDWH">
        <property name="minimumSize">
         <size>
@@ -871,7 +885,7 @@
         <string notr="true"/>
        </property>
        <property name="text">
-        <string>1.Variable Filament Calculation</string>
+        <string>1.Initial Calculation</string>
        </property>
       </widget>
      </item>
@@ -1061,7 +1075,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1325</width>
+     <width>1306</width>
      <height>21</height>
     </rect>
    </property>

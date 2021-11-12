@@ -1929,7 +1929,6 @@ void GcodeGeneration::initialNormalSurface(PolygenMesh* normSurf)
 {
 	for (GLKPOSITION Pos = polygenMesh_Waypoints->GetMeshList().GetHeadPosition(); Pos;) {
 		QMeshPatch* WayPointPatch = (QMeshPatch*)polygenMesh_Waypoints->GetMeshList().GetNext(Pos);
-		int itr = 0;
 
 		if (WayPointPatch->GetIndexNo() < LayerInd_From || WayPointPatch->GetIndexNo() > LayerInd_To) continue;
 
@@ -1946,14 +1945,12 @@ void GcodeGeneration::initialNormalSurface(PolygenMesh* normSurf)
 		polygenMesh_NormalSurface = normSurf;
 		polygenMesh_NormalSurface->GetMeshList().AddTail(surf);
 
-
-		std::cout << vertex_array[0] << std::endl;
 		surf->constructionFromVerFaceTable(totalNodes * 2, vertex_array, totalNodes * 2 - 2, face_array);
 
 	}
 }
 
-void GcodeGeneration::makeSmooth(PolygenMesh* normSurf)
+void GcodeGeneration::makeSmooth(PolygenMesh* normSurf, bool doCheckCollision)
 {
 	for (GLKPOSITION Pos = polygenMesh_Waypoints->GetMeshList().GetHeadPosition(); Pos;) {
 		QMeshPatch* WayPointPatch = (QMeshPatch*)polygenMesh_Waypoints->GetMeshList().GetNext(Pos);
@@ -2013,9 +2010,15 @@ void GcodeGeneration::makeSmooth(PolygenMesh* normSurf)
 					double alpha = double(i) / 30.0;
 					normalAverage(normal_prev, normal_curr, normal_next,alpha); //smooth the orientation by simple average method
 					/*Rewrite the X,Y,Z,B,C values for the new orientation*/
-					if (!(isColliding(normal_curr,curr_node,normal_next,next_node,WayPointPatch) && isColliding(normal_prev,prev_node,normal_curr, curr_node, WayPointPatch))) {
+					if(!doCheckCollision) {
+						curr_node->SetNormal(normal_curr[0], normal_curr[1], normal_curr[2]);
+						break;
+					}
+
+					else if (!(isCollidingEdge(normal_curr,curr_node,normal_next,next_node,WayPointPatch) && isCollidingEdge(normal_prev,prev_node,normal_curr, curr_node, WayPointPatch))) {
 						//std::cout << "changing normal at index " << curr_node->GetIndexNo() << std::endl;
 						curr_node->SetNormal(normal_curr[0], normal_curr[1], normal_curr[2]);
+						curr_node->m_printNor = Eigen::Vector3d(normal_curr[0], normal_curr[1], normal_curr[2]);
 						break;
 					}
 
@@ -2049,7 +2052,196 @@ void GcodeGeneration::makeSmooth(PolygenMesh* normSurf)
 	
 }
 
-bool GcodeGeneration::isColliding(double* start_normal, QMeshNode* start_node, double* end_normal, QMeshNode* end_node, QMeshPatch* WayPointPatch) {
+void GcodeGeneration::removeIntitialCollision(bool eliminateCollision) {
+
+	std::cout << "Removing initial collision\n";
+	for (GLKPOSITION pos = polygenMesh_Waypoints->GetMeshList().GetHeadPosition(); pos;) {
+		QMeshPatch* wayPointPatch = (QMeshPatch*)polygenMesh_Waypoints->GetMeshList().GetNext(pos);
+		
+		std::cout << "layer: " << wayPointPatch->GetIndexNo() << std::endl;
+		if (wayPointPatch->GetIndexNo() < LayerInd_From || wayPointPatch->GetIndexNo() > LayerInd_To) continue;
+		
+		for (GLKPOSITION nodePos = wayPointPatch->GetNodeList().GetHeadPosition(); nodePos;) {
+			QMeshNode* curr_node = (QMeshNode*)wayPointPatch->GetNodeList().GetNext(nodePos);
+
+			double Norm[3];
+			curr_node->GetNormal(Norm[0], Norm[1], Norm[2]);
+
+			//<make cone to check here>
+			Eigen::Vector3d normal(Norm[0], Norm[1], Norm[2]);
+			Eigen::Vector3d _z(0.0, 0.0, 1.0);
+			Eigen::Vector3d _x(1.0, 0.0, 0.0);
+
+			Eigen::Vector3d r1 = normal.cross(_z);
+			if (abs(r1.norm()) < 0.0001)
+			{
+				r1 = normal.cross(_x);
+			}
+
+			Eigen::Vector3d r2 = normal.cross(r1);
+
+			r1.normalize();
+			r2.normalize();
+
+			Eigen::Vector3d new_normal;
+
+			curr_node->SetOrigNormal(Norm[0], Norm[1], Norm[2]);
+
+			float r = 0.5;
+			int itr = 0;
+			while (isCollidingNode(normal,curr_node,wayPointPatch)) {
+				std::cout << "Initial collision detected\n";
+				if (!eliminateCollision)
+				{
+					curr_node->isCollision = true;
+					break;
+				}
+
+				if (itr >= 10)
+				{
+					std::cout << "Max iteration reached: No non-colliding normal found\n Layer: " << wayPointPatch->GetIndexNo() << " Node: " << curr_node->GetIndexNo() << std::endl;
+					exit(1);
+				}
+				
+				new_normal = normal + r * r1;
+				if (!isCollidingNode(new_normal, curr_node, wayPointPatch))
+				{
+					curr_node->SetNormal(new_normal[0], new_normal[1], new_normal[2]);
+					curr_node->m_printNor = new_normal;
+					break;
+				}
+
+				new_normal = normal - r * r1;
+				if (!isCollidingNode(new_normal, curr_node, wayPointPatch))
+				{
+					curr_node->SetNormal(new_normal[0], new_normal[1], new_normal[2]);
+					curr_node->m_printNor = new_normal;
+					break;
+				}
+
+				new_normal = normal + r * r2;
+				if (!isCollidingNode(new_normal, curr_node, wayPointPatch))
+				{
+					curr_node->SetNormal(new_normal[0], new_normal[1], new_normal[2]);
+					curr_node->m_printNor = new_normal;
+					break;
+				}
+
+				new_normal = normal - r * r2;
+				if (!isCollidingNode(new_normal, curr_node, wayPointPatch))
+				{
+					curr_node->SetNormal(new_normal[0], new_normal[1], new_normal[2]);
+					curr_node->m_printNor = new_normal;
+					break;
+				}
+
+				itr++;
+
+				r = r + 0.5;
+				r1 = r1 + r2;
+				r2 = r1 - 2 * r2;
+				r1.normalize();
+				r2.normalize();
+
+			}
+
+			
+			
+		}
+
+		
+	}
+
+	std::cout << "Removing initial collision COMPLETE\n";
+
+}
+
+bool GcodeGeneration::isCollidingNode(Eigen::Vector3d norm, QMeshNode* Node, QMeshPatch* WayPointPatch)
+{
+
+	QMeshPatch* eHeadPatch = (QMeshPatch*)polygenMesh_ExtruderHead->GetMeshList().GetHead();
+	QMeshPatch* plateform_Patch = (QMeshPatch*)polygenMesh_Platform->GetMeshList().GetHead();
+
+	bool collisionPatch = false;
+
+
+
+
+	Node->isCollision = false;
+
+	Eigen::Vector3d nodePos;
+	Node->GetCoord3D(nodePos(0), nodePos(1), nodePos(2));
+	_locate_EHead_printPos(eHeadPatch, nodePos, norm);
+	QHULLSET* eHeadConvexFront = buildConvexHull_extruderHead(eHeadPatch);
+
+	// Test all of the previous-layers' node +-+-+ all of the previous-node before the deteted node at the same layer
+	std::vector<QMeshPatch*> check_below_WpSet;
+	int layerLoop = 0;
+	// collect the Waypoint patch before the printed node now
+	for (GLKPOSITION nextPos = polygenMesh_Waypoints->GetMeshList().Find(WayPointPatch); nextPos;) {
+		QMeshPatch* nextWpPatch = (QMeshPatch*)polygenMesh_Waypoints->GetMeshList().GetNext(nextPos);
+
+		if (layerLoop >= layerDepth) break;
+
+		check_below_WpSet.push_back(nextWpPatch);
+
+		layerLoop++;
+	}
+	// speed up the code about the _checkSingleNodeCollision();
+#pragma omp parallel
+	{
+#pragma omp for  
+
+		for (int i = 0; i < check_below_WpSet.size(); i++) {
+
+			for (GLKPOSITION nextWpNodePos = check_below_WpSet[i]->GetNodeList().GetHeadPosition(); nextWpNodePos;) {
+				QMeshNode* nextWpNode = (QMeshNode*)check_below_WpSet[i]->GetNodeList().GetNext(nextWpNodePos);
+
+				if (WayPointPatch->GetIndexNo() == check_below_WpSet[i]->GetIndexNo()) {
+					if (nextWpNode->GetIndexNo() >= Node->GetIndexNo())
+						continue;
+				}
+
+				Eigen::Vector3d node_coord3D = nextWpNode->m_printPos;
+				double pnt[3] = { node_coord3D[0],node_coord3D[1],node_coord3D[2] };
+				bool isInHull = _isPntInsideConvexHull(eHeadConvexFront, pnt);
+
+				if (isInHull) {
+					collisionPatch = true;
+					break;
+				}
+			}
+			if (collisionPatch) break;
+		}
+		//check platform nodes
+		for (GLKPOSITION plateform_NodePos = plateform_Patch->GetNodeList().GetHeadPosition(); plateform_NodePos;) {
+			QMeshNode* plateform_Node = (QMeshNode*)plateform_Patch->GetNodeList().GetNext(plateform_NodePos);
+
+			Eigen::Vector3d node_coord3D = plateform_Node->m_printPos;
+			double pnt[3] = { node_coord3D[0],node_coord3D[1],node_coord3D[2] };
+			bool isInHull = _isPntInsideConvexHull(eHeadConvexFront, pnt);
+
+			if (isInHull) {
+				collisionPatch = true;
+				break;
+			}
+		}
+	}
+	_freeMemoryConvexHull(eHeadConvexFront);
+
+
+
+
+	return collisionPatch;
+}
+
+
+
+
+
+
+
+bool GcodeGeneration::isCollidingEdge(double* start_normal, QMeshNode* start_node, double* end_normal, QMeshNode* end_node, QMeshPatch* WayPointPatch) {
 
 	/*Chaning the previous layers to next layers in the code, to continue from there*/
 					
@@ -2248,7 +2440,7 @@ void GcodeGeneration::_get_GraphNode_List(QMeshPatch* patch, std::vector<collisi
 	for (GLKPOSITION Pos = patch->GetNodeList().GetHeadPosition(); Pos;) {
 		QMeshNode* Node = (QMeshNode*)patch->GetNodeList().GetNext(Pos);
 
-		if (Node->isCollision) {
+		if (false) {
 
 			double candidate_normal_NUM = 0;
 			for (int ZrotateAngle = 0; ZrotateAngle < 360; ZrotateAngle = ZrotateAngle + delta_Z) {

@@ -532,7 +532,6 @@ bool QMeshPatch::inputPLY2File(char* filename)
 
 void QMeshPatch::constructionFromVerFaceTable(int nodeNum, float *nodeTable, int faceNum, unsigned int* faceTable)
 {
-	std::cout << nodeTable[0] << std::endl;
 	QMeshNode *node,*startNode,*endNode;
 	QMeshEdge *edge;
 	QMeshFace *face;

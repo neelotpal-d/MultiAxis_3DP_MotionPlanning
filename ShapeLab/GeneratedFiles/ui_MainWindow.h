@@ -136,6 +136,8 @@ public:
     QCheckBox *checkBox_varyHeight;
     QCheckBox *checkBox_varyWidth;
     QCheckBox *checkBox_TestDHW_Switch;
+    QCheckBox *checkBox_initialCollision;
+    QCheckBox *checkBox_smoothingCollision;
     QPushButton *pushButton_calDWH;
     QFrame *line_3;
     QHBoxLayout *horizontalLayout_7;
@@ -166,7 +168,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
-        MainWindow->resize(1325, 1070);
+        MainWindow->resize(1306, 1070);
         MainWindow->setMinimumSize(QSize(0, 0));
         QFont font;
         font.setBold(true);
@@ -769,6 +771,16 @@ public:
 
         verticalLayout->addLayout(horizontalLayout_5);
 
+        checkBox_initialCollision = new QCheckBox(dockWidgetContents);
+        checkBox_initialCollision->setObjectName(QString::fromUtf8("checkBox_initialCollision"));
+
+        verticalLayout->addWidget(checkBox_initialCollision);
+
+        checkBox_smoothingCollision = new QCheckBox(dockWidgetContents);
+        checkBox_smoothingCollision->setObjectName(QString::fromUtf8("checkBox_smoothingCollision"));
+
+        verticalLayout->addWidget(checkBox_smoothingCollision);
+
         pushButton_calDWH = new QPushButton(dockWidgetContents);
         pushButton_calDWH->setObjectName(QString::fromUtf8("pushButton_calDWH"));
         pushButton_calDWH->setMinimumSize(QSize(90, 0));
@@ -903,7 +915,7 @@ public:
         MainWindow->addDockWidget(static_cast<Qt::DockWidgetArea>(2), dockWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 1325, 21));
+        menuBar->setGeometry(QRect(0, 0, 1306, 21));
         menuBar->setLayoutDirection(Qt::LeftToRight);
         menuFile = new QMenu(menuBar);
         menuFile->setObjectName(QString::fromUtf8("menuFile"));
@@ -1055,7 +1067,9 @@ public:
         checkBox_varyHeight->setText(QApplication::translate("MainWindow", "H", nullptr));
         checkBox_varyWidth->setText(QApplication::translate("MainWindow", "W", nullptr));
         checkBox_TestDHW_Switch->setText(QApplication::translate("MainWindow", "Test", nullptr));
-        pushButton_calDWH->setText(QApplication::translate("MainWindow", "1.Variable Filament Calculation", nullptr));
+        checkBox_initialCollision->setText(QApplication::translate("MainWindow", "Initial Collision Detection", nullptr));
+        checkBox_smoothingCollision->setText(QApplication::translate("MainWindow", "Detect Collision while smoothing", nullptr));
+        pushButton_calDWH->setText(QApplication::translate("MainWindow", "1.Initial Calculation", nullptr));
         pushButton_calSingularOpt->setText(QApplication::translate("MainWindow", "2.Singularity Optimization", nullptr));
         checkBox_showSingularityNode->setText(QApplication::translate("MainWindow", "Singular Node", nullptr));
         checkBox_showSolveSelection->setText(QApplication::translate("MainWindow", "Solve Selection", nullptr));
