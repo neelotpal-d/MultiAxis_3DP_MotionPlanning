@@ -66,9 +66,10 @@ public:
 	//Final smoothing of path <Added by Neelotpal>
 	void makeSmooth(PolygenMesh* normSurf);
 	bool isSmooth(double* normal_prev, double* normal_curr, double* normal_next);
-	void normalAverage(double* normal_prev, double* normal_curr, double* normal_next);
+	void normalAverage(double* normal_prev, double* normal_curr, double* normal_next, double& alpha);
 	void buildSurfaceFromNormals(QMeshPatch* WayPointPatch, float* vertex_array, unsigned int* face_array);
 	void initialNormalSurface(PolygenMesh* normSurf);
+	bool isColliding(double* start_normal, QMeshNode* start_node, double* end_normal, QMeshNode* end_node, QMeshPatch* WayPointPatch);
 
 
 	// Gcode writing

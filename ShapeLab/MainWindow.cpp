@@ -523,7 +523,7 @@ void MainWindow::on_treeView_clicked(const QModelIndex &index)
 
 void MainWindow::readGcodeSourceData() {
     std::cout << "Read Gcode Source Data__ Running ..." << std::endl;
-
+	
     string PosNorFileDir = "../DataSet/Sorce/" + (ui->lineEdit_SorceDataDir->text()).toStdString() + "/waypoint";
     string LayerFileDir = "../DataSet/Sorce/" + (ui->lineEdit_SorceDataDir->text()).toStdString() + "/layer";
 
@@ -538,7 +538,7 @@ void MainWindow::readGcodeSourceData() {
     ui->spinBox_GcodeGeneToIndex->setValue(wayPointFileCell.size() - 1);
     readWayPointData(PosNorFileDir); // have getten the right waypoints with right Zup and move distace
 
-
+	
     _natSort(LayerFileDir, sliceSetFileCell);
     if (wayPointFileCell.size() != sliceSetFileCell.size()) {
         std::cout << "Error: Layers file num != Waypoints file num" << std::endl;
@@ -561,9 +561,15 @@ void MainWindow::readGcodeSourceData() {
 void MainWindow::clearScreen(){
 	std::cout << "Resetting data...\n";
 	
+	if (GcodeGene != nullptr) {
+		//do we need to reset??
+	}
+	wayPointFileCell.clear();
+	sliceSetFileCell.clear();	                               
 	polygenMeshList.RemoveAll();
 	pGLK->ClearDisplayObjList();
 	pGLK->refresh(true);
+	
 	std::cout << "Reset Complete\n";
 
 };
@@ -846,7 +852,7 @@ void MainWindow::changeWaypointDisplay() {
 	for (GLKPOSITION pos = polygenMeshList.GetHeadPosition(); pos != nullptr;) {
 		PolygenMesh* polygenMesh = (PolygenMesh*)polygenMeshList.GetNext(pos);
 		if ("Waypoints" != polygenMesh->getModelName()
-			&& "Slices" != polygenMesh->getModelName())
+			&& "Slices" != polygenMesh->getModelName() && "normalSurface" != polygenMesh->getModelName())
 			continue;
 
 		int index = 0;
@@ -907,7 +913,7 @@ void MainWindow::readWayPointData(std::string packName) {
 
 	PolygenMesh* waypointSet = NULL;
 	waypointSet = _detectPolygenMesh(WAYPOINT, "Waypoints", false);
-
+	
 	if (waypointSet == NULL) {
 
 		waypointSet = _buildPolygenMesh(WAYPOINT, "Waypoints");
@@ -935,6 +941,7 @@ void MainWindow::readWayPointData(std::string packName) {
 	}
 
 	// MoveModel(Xmove, Ymove, Zmove);
+	
 	for (GLKPOSITION patchPos = waypointSet->GetMeshList().GetHeadPosition(); patchPos;) {
 		QMeshPatch* waypoint_patch = (QMeshPatch*)waypointSet->GetMeshList().GetNext(patchPos);
 		for (GLKPOSITION Pos = waypoint_patch->GetNodeList().GetHeadPosition(); Pos;) {

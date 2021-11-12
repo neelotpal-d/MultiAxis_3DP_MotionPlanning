@@ -1,11 +1,46 @@
-﻿  InteractiveTool.cpp
-C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\GLKLib.h(163,35): warning C4100: 'bVertexNormalShading': unreferenced formal parameter
-C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\GLKLib.h(214,63): warning C4100: 'even_type': unreferenced formal parameter
-C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\GLKLib.h(214,39): warning C4100: 'event': unreferenced formal parameter
-C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\InteractiveTool.h(7,60): warning C4091: 'typedef ': ignored on left of 'select_type' when no variable is declared
-C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\QMeshLib\PolygenMesh.h(24,2): warning C4091: 'typedef ': ignored on left of 'mesh_type' when no variable is declared
-C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\GLKGeometry.h(493,28): warning C4267: 'return': conversion from 'size_t' to 'unsigned int', possible loss of data
-C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\GLKCameraTool.h(9,62): warning C4091: 'typedef ': ignored on left of 'camera_type' when no variable is declared
+﻿  Reading Qt configuration (C:/Qt/Qt5.12.3/5.12.3/msvc2017_64/bin/qmake)
+  Generate moc_predefs.h
+  Moc'ing GLKLib.h...
+  GLKGeometry.cpp
+  GLKGraph.cpp
+  GLKHeap.cpp
+  GLKLib.cpp
+  GLKMatrixLib.cpp
+  GLKNearestNeighbor.cpp
+  GLKObList.cpp
+  GLKRational.cpp
+  GLKSparseMatrix.cpp
+  GLKSparseMatrixDirectSolver.cpp
+  GLKSparseMatrixIterativeSolver.cpp
+  InteractiveTool.cpp
+  stdafx.cpp
+C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\GLKMatrixLib.cpp(138,59): warning C4100: 'col': unreferenced formal parameter
+C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\GLKMatrixLib.cpp(161,57): warning C4100: 'col': unreferenced formal parameter
+C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\GLKMatrixLib.cpp(293,55): warning C4100: 'col': unreferenced formal parameter
+C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\GLKMatrixLib.cpp(305,46): warning C4100: 'row': unreferenced formal parameter
+C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\GLKSparseMatrixIterativeSolver.cpp(78,57): warning C4100: 'nmax': unreferenced formal parameter
+C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\GLKSparseMatrixIterativeSolver.cpp(362,120): warning C4100: 'itrnsp': unreferenced formal parameter
+C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\GLKSparseMatrixIterativeSolver.cpp(362,72): warning C4100: 'ija': unreferenced formal parameter
+C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\GLKGraph.cpp(64,9): warning C4189: 'maxFlow': local variable is initialized but not referenced
+C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\GLKGraph.cpp(68,17): warning C4189: 'node': local variable is initialized but not referenced
+C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\GLKGraph.cpp(112,82): warning C4100: 'targetNode': unreferenced formal parameter
+C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\GLKLib.h(163,35): warning C4100: 'bVertexNormalShading': unreferenced formal parameter (compiling source file GLKGeometry.cpp)
+C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\GLKLib.h(214,63): warning C4100: 'even_type': unreferenced formal parameter (compiling source file GLKGeometry.cpp)
+C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\GLKLib.h(214,39): warning C4100: 'event': unreferenced formal parameter (compiling source file GLKGeometry.cpp)
+C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\GLKGeometry.h(493,28): warning C4267: 'return': conversion from 'size_t' to 'unsigned int', possible loss of data (compiling source file GLKGeometry.cpp)
+C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\GLKLib.h(163,35): warning C4100: 'bVertexNormalShading': unreferenced formal parameter (compiling source file InteractiveTool.cpp)
+C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\GLKLib.h(214,63): warning C4100: 'even_type': unreferenced formal parameter (compiling source file InteractiveTool.cpp)
+C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\GLKLib.h(214,39): warning C4100: 'event': unreferenced formal parameter (compiling source file InteractiveTool.cpp)
+C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\InteractiveTool.h(7,60): warning C4091: 'typedef ': ignored on left of 'select_type' when no variable is declared (compiling source file InteractiveTool.cpp)
+C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\GLKLib.h(163,35): warning C4100: 'bVertexNormalShading': unreferenced formal parameter (compiling source file GLKLib.cpp)
+C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\GLKLib.h(214,63): warning C4100: 'even_type': unreferenced formal parameter (compiling source file GLKLib.cpp)
+C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\GLKLib.h(214,39): warning C4100: 'event': unreferenced formal parameter (compiling source file GLKLib.cpp)
+C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\QMeshLib\PolygenMesh.h(24,2): warning C4091: 'typedef ': ignored on left of 'mesh_type' when no variable is declared (compiling source file InteractiveTool.cpp)
+C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\GLKGeometry.h(493,28): warning C4267: 'return': conversion from 'size_t' to 'unsigned int', possible loss of data (compiling source file InteractiveTool.cpp)
+C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\GLKCameraTool.h(9,62): warning C4091: 'typedef ': ignored on left of 'camera_type' when no variable is declared (compiling source file GLKLib.cpp)
+C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\InteractiveTool.h(7,60): warning C4091: 'typedef ': ignored on left of 'select_type' when no variable is declared (compiling source file GLKLib.cpp)
+C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\GLKCameraTool.h(9,62): warning C4091: 'typedef ': ignored on left of 'camera_type' when no variable is declared (compiling source file InteractiveTool.cpp)
+C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\GLKGeometry.h(493,28): warning C4267: 'return': conversion from 'size_t' to 'unsigned int', possible loss of data (compiling source file GLKLib.cpp)
 C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\InteractiveTool.cpp(105,68): warning C4100: 'event_type': unreferenced formal parameter
 C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\InteractiveTool.cpp(105,44): warning C4100: 'event': unreferenced formal parameter
 C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\InteractiveTool.cpp(138,68): warning C4100: 'event_type': unreferenced formal parameter
@@ -17,4 +52,16 @@ C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\InteractiveTool.cp
 C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\InteractiveTool.cpp(277,69): warning C4100: 'event_type': unreferenced formal parameter
 C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\InteractiveTool.cpp(277,45): warning C4100: 'event': unreferenced formal parameter
 C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\InteractiveTool.cpp(338,9): warning C4189: 'selectNum': local variable is initialized but not referenced
+C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\GLKLib.cpp(198,20): warning C4189: 'oldRange': local variable is initialized but not referenced
+C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\GLKLib.cpp(228,12): warning C4189: 'f': local variable is initialized but not referenced
+C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\GLKLib.cpp(399,52): warning C4100: 'bRefresh': unreferenced formal parameter
+C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\GLKLib.cpp(402,11): warning C4189: 'oldRange': local variable is initialized but not referenced
+C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\GLKLib.cpp(677,38): warning C4100: 'event': unreferenced formal parameter
+C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\GLKLib.cpp(721,69): warning C4100: 'bFill': unreferenced formal parameter
+C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\GLKLib.cpp(874,9): warning C4189: 'index': local variable is initialized but not referenced
+C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\GLKLib.cpp(882,13): warning C4189: 'in': local variable is initialized but not referenced
+  moc_GLKLib.cpp
+C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\GLKLib.h(163,35): warning C4100: 'bVertexNormalShading': unreferenced formal parameter
+C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\GLKLib.h(214,63): warning C4100: 'even_type': unreferenced formal parameter
+C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\GLKLib.h(214,39): warning C4100: 'event': unreferenced formal parameter
   GLKLib.vcxproj -> C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\GLKLib\release\GLKLib.lib

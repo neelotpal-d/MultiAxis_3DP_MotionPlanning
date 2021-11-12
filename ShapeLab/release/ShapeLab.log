@@ -20,7 +20,7 @@ C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\ShapeLab\MainWindow.cpp(5
 C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\ShapeLab\MainWindow.cpp(536,75): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
 C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\ShapeLab\MainWindow.cpp(537,73): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
 C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\ShapeLab\MainWindow.cpp(538,71): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\ShapeLab\MainWindow.cpp(1010,23): warning C4101: 'nx': unreferenced local variable
-C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\ShapeLab\MainWindow.cpp(1010,27): warning C4101: 'ny': unreferenced local variable
-C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\ShapeLab\MainWindow.cpp(1010,31): warning C4101: 'nz': unreferenced local variable
+C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\ShapeLab\MainWindow.cpp(1015,23): warning C4101: 'nx': unreferenced local variable
+C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\ShapeLab\MainWindow.cpp(1015,27): warning C4101: 'ny': unreferenced local variable
+C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\ShapeLab\MainWindow.cpp(1015,31): warning C4101: 'nz': unreferenced local variable
   ShapeLab.vcxproj -> C:\Users\neelo\5AXISMAKER\MultiAxis_3DP_MotionPlanning\ShapeLab\release\ShapeLab.exe

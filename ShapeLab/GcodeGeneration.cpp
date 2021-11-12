@@ -1969,7 +1969,7 @@ void GcodeGeneration::makeSmooth(PolygenMesh* normSurf)
 		for (GLKPOSITION pos = WayPointPatch->GetNodeList().GetHeadPosition();pos;) {
 			
 			curr_node = (QMeshNode*)WayPointPatch->GetNodeList().GetNext(pos); //get the current node and advance the Pos pointer to next position [see GLKObList]
-			std::cout << "In Loop " << curr_node->GetIndexNo() << "\n";
+			std::cout << "\n\nIn Loop: " <<"Waypoint Layer "<< WayPointPatch->GetIndexNo()<<" Node number: " << curr_node->GetIndexNo() << "\n";
 			//if first point in the list or jumpsection, continue from the next
 			if (curr_node->GetIndexNo() == 0 || curr_node->Jump_preSecEnd) {
 				prev_node = curr_node;
@@ -2002,18 +2002,28 @@ void GcodeGeneration::makeSmooth(PolygenMesh* normSurf)
 
 			curr_node->SetOrigNormal(normal_curr[0], normal_curr[1], normal_curr[2]);
 
-			std::cout << " " << normal_curr[0] << " " << normal_curr[1] << " " << normal_curr[2] << "\n\n";
+			//std::cout << " " << normal_curr[0] << " " << normal_curr[1] << " " << normal_curr[2] << "\n\n";
+
+
 			if (!isSmooth(normal_prev, normal_curr, normal_next))
 			{
 
 				std::cout << "one non-smooth point detected..\n"; //bug-check
-				normalAverage(normal_prev, normal_curr, normal_next); //smooth the orientation by simple average method
-				/*Rewrite the X,Y,Z,B,C values for the new orientation*/
-				curr_node->SetNormal(normal_curr[0], normal_curr[1], normal_curr[2]);
+				for (int i = 20; i >= 0; i--) {
+					double alpha = double(i) / 30.0;
+					normalAverage(normal_prev, normal_curr, normal_next,alpha); //smooth the orientation by simple average method
+					/*Rewrite the X,Y,Z,B,C values for the new orientation*/
+					if (!(isColliding(normal_curr,curr_node,normal_next,next_node,WayPointPatch) && isColliding(normal_prev,prev_node,normal_curr, curr_node, WayPointPatch))) {
+						//std::cout << "changing normal at index " << curr_node->GetIndexNo() << std::endl;
+						curr_node->SetNormal(normal_curr[0], normal_curr[1], normal_curr[2]);
+						break;
+					}
 
-
+				}
 
 			}
+
+			//std::cout << "new: " << normal_curr[0] << " " << normal_curr[1] << " " << normal_curr[2] << "\n\n";
 			prev_node = curr_node;
 			
 
@@ -2029,7 +2039,7 @@ void GcodeGeneration::makeSmooth(PolygenMesh* normSurf)
 		polygenMesh_NormalSurface->GetMeshList().AddTail(surf);
 
 
-		std::cout << vertex_array[0] << std::endl;
+		//std::cout << vertex_array[0] << std::endl;
 		surf->constructionFromVerFaceTable(totalNodes * 2, vertex_array, totalNodes * 2 - 2, face_array);
 
 	}
@@ -2039,6 +2049,112 @@ void GcodeGeneration::makeSmooth(PolygenMesh* normSurf)
 	
 }
 
+bool GcodeGeneration::isColliding(double* start_normal, QMeshNode* start_node, double* end_normal, QMeshNode* end_node, QMeshPatch* WayPointPatch) {
+
+	/*Chaning the previous layers to next layers in the code, to continue from there*/
+					
+
+			//skip the jump edges
+			if ((start_node->Jump_preSecEnd == true && end_node->Jump_nextSecStart == true)
+				|| (end_node->Jump_preSecEnd == true && start_node->Jump_nextSecStart == true)) {
+
+				return false;
+			}
+
+			bool collisionPatch = false;
+
+			QMeshPatch* eHeadPatch = (QMeshPatch*)polygenMesh_ExtruderHead->GetMeshList().GetHead();
+			QMeshPatch* plateform_Patch = (QMeshPatch*)polygenMesh_Platform->GetMeshList().GetHead();
+
+			Eigen::Vector3d nodePos_1, nodePos_2;
+
+			start_node->GetCoord3D(nodePos_1(0), nodePos_1(1), nodePos_1(2));
+			end_node->GetCoord3D(nodePos_2(0), nodePos_2(1), nodePos_2(2));
+
+			Eigen::Vector3d norm_1(start_normal[0], start_normal[1], start_normal[2]);
+			Eigen::Vector3d norm_2(end_normal[0], end_normal[1], end_normal[2]);
+			
+			
+
+			//build a point set for convex hull building which contains two set of nodes of eHead
+			std::vector<Eigen::Vector3d> eHead_pointSet(2 * eHeadPatch->GetNodeNumber());
+
+			_locate_EHead_printPos(eHeadPatch, nodePos_1, norm_1);
+			//load the coordinate of ehead node in start point
+			_load_eHead_points(eHeadPatch, eHead_pointSet, 0);
+
+			_locate_EHead_printPos(eHeadPatch, nodePos_2, norm_2);
+			//load the coordinate of ehead node in end point
+			_load_eHead_points(eHeadPatch, eHead_pointSet, eHeadPatch->GetNodeNumber());
+
+			//std::cout << "-------------------------\n";
+			//for (int jk = 0; jk < eHead_pointSet.size(); jk++) {std::cout << eHead_pointSet[jk].transpose() << std::endl;}
+
+			QHULLSET* eHeadConvexFront = buildConvexHull_extruderHead(eHeadPatch);
+
+			// Test all of the next-layers' node +-+-+ all of the next-nodes after the deteted node at the same layer
+			std::vector<QMeshPatch*> check_below_WpSet;
+			int layerLoop = 0;
+			// collect the Waypoint patchs after the current patch
+			for (GLKPOSITION nextPos = polygenMesh_Waypoints->GetMeshList().Find(WayPointPatch); nextPos;) {     /*Last Edited Here*/
+				QMeshPatch* nextWpPatch = (QMeshPatch*)polygenMesh_Waypoints->GetMeshList().GetNext(nextPos);
+
+				if (layerLoop > layerDepth) break;
+
+				check_below_WpSet.push_back(nextWpPatch);
+
+				layerLoop++;
+			}
+			// speed up the code about the _checkSingleNodeCollision();
+#pragma omp parallel
+			{
+#pragma omp for  
+
+				for (int i = 0; i < check_below_WpSet.size(); i++) {
+
+					for (GLKPOSITION nextWpNodePos = check_below_WpSet[i]->GetNodeList().GetHeadPosition(); nextWpNodePos;) {
+						QMeshNode* nextWpNode = (QMeshNode*)check_below_WpSet[i]->GetNodeList().GetNext(nextWpNodePos);
+
+						if (WayPointPatch->GetIndexNo() == check_below_WpSet[i]->GetIndexNo()) {
+							if (nextWpNode->GetIndexNo() >= start_node->GetIndexNo()
+								|| nextWpNode->GetIndexNo() >= end_node->GetIndexNo())
+								continue;
+						}
+
+						Eigen::Vector3d node_coord3D = nextWpNode->m_printPos;
+						//std::cout << "nodes "<<node_coord3D.transpose() << std::endl;
+						double pnt[3] = { node_coord3D[0],node_coord3D[1],node_coord3D[2] };
+						bool isInHull = _isPntInsideConvexHull(eHeadConvexFront, pnt);
+						if (isInHull) {
+							collisionPatch=true;
+
+							std::cout << "COLLISON!!!!!\n";
+							break;
+						}
+					}
+					//if (collisionPatch) break;
+				}
+				//check platform nodes
+				for (GLKPOSITION plateform_NodePos = plateform_Patch->GetNodeList().GetHeadPosition(); plateform_NodePos;) {
+					QMeshNode* plateform_Node = (QMeshNode*)plateform_Patch->GetNodeList().GetNext(plateform_NodePos);
+
+					Eigen::Vector3d node_coord3D = plateform_Node->m_printPos;
+					double pnt[3] = { node_coord3D[0],node_coord3D[1],node_coord3D[2] };
+					bool isInHull = _isPntInsideConvexHull(eHeadConvexFront, pnt);
+
+					if (isInHull) {
+						collisionPatch = true;
+
+						std::cout << "COLLISON!!!!!\n";
+						break;
+					}
+				}
+			}
+			_freeMemoryConvexHull(eHeadConvexFront);
+		
+	
+	return collisionPatch;
+}
 
 void GcodeGeneration::buildSurfaceFromNormals(QMeshPatch* WayPointPatch, float* vertex_array, unsigned int* face_array)
 {
@@ -2091,7 +2207,7 @@ void GcodeGeneration::buildSurfaceFromNormals(QMeshPatch* WayPointPatch, float* 
 
 bool GcodeGeneration::isSmooth(double* normal_prev, double* normal_curr, double* normal_next)
 {
-	double ang_threshold = acos(0)/10; //tool orientation angle difference threshold
+	double ang_threshold = acos(0)/20; //tool orientation angle difference threshold
 	
 	Eigen::Vector3d prev(normal_prev[0], normal_prev[1], normal_prev[2]); //use eignen vector3d type for easier vector operations
 	Eigen::Vector3d curr(normal_curr[0], normal_curr[1], normal_curr[2]);
@@ -2106,14 +2222,15 @@ bool GcodeGeneration::isSmooth(double* normal_prev, double* normal_curr, double*
 	return true;
 }
 
-void GcodeGeneration::normalAverage(double* normal_prev, double* normal_curr, double* normal_next)
+void GcodeGeneration::normalAverage(double* normal_prev, double* normal_curr, double* normal_next, double& alpha)
 {
 	
 	Eigen::Vector3d prev(normal_prev[0], normal_prev[1], normal_prev[2]); //use eignen vector3d type for easier vector operations
 	Eigen::Vector3d curr(normal_curr[0], normal_curr[1], normal_curr[2]);
 	Eigen::Vector3d nex(normal_next[0], normal_next[1], normal_next[2]);
 	
-	curr = (prev + curr + nex) / 3; //smooth the orientation by simple average method
+	Eigen::Vector3d mean = (prev + nex) / 2; 
+	curr = (alpha * mean) + ((1 - alpha) * curr);								//smooth the orientation by weighted average method
 	curr.normalize(); 
 
 	normal_curr[0] = curr[0];
