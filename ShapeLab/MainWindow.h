@@ -43,6 +43,7 @@ private:
     QTimer Gcode_timer; //Gcode Simulation timer
     int gcodetimerItertime;
     int simuLayerInd;
+    int simuNodeInd;
     Eigen::MatrixXf Gcode_Table;
     //unsigned int operationTime = 0;
     /* ------------------------ */

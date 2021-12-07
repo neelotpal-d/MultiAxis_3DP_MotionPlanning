@@ -70,7 +70,7 @@ public:
 	void buildSurfaceFromNormals(QMeshPatch* WayPointPatch, float* vertex_array, unsigned int* face_array);
 	void initialNormalSurface(PolygenMesh* normSurf);
 	bool isCollidingEdge(double* start_normal, QMeshNode* start_node, double* end_normal, QMeshNode* end_node, QMeshPatch* WayPointPatch);
-	void removeIntitialCollision(bool eliminateCollision);
+	int removeIntitialCollision(bool eliminateCollision);
 	bool isCollidingNode(Eigen::Vector3d norm, QMeshNode* Node, QMeshPatch* WayPointPatch);
 
 

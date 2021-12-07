@@ -1952,6 +1952,8 @@ void GcodeGeneration::initialNormalSurface(PolygenMesh* normSurf)
 
 void GcodeGeneration::makeSmooth(PolygenMesh* normSurf, bool doCheckCollision)
 {
+	
+	int notSmoothNum = 0;
 	for (GLKPOSITION Pos = polygenMesh_Waypoints->GetMeshList().GetHeadPosition(); Pos;) {
 		QMeshPatch* WayPointPatch = (QMeshPatch*)polygenMesh_Waypoints->GetMeshList().GetNext(Pos);
 		int itr = 0;
@@ -2005,7 +2007,8 @@ void GcodeGeneration::makeSmooth(PolygenMesh* normSurf, bool doCheckCollision)
 			if (!isSmooth(normal_prev, normal_curr, normal_next))
 			{
 
-				std::cout << "one non-smooth point detected..\n"; //bug-check
+				//std::cout << "one non-smooth point detected..\n"; //bug-check
+				notSmoothNum++;
 				for (int i = 20; i >= 0; i--) {
 					double alpha = double(i) / 30.0;
 					normalAverage(normal_prev, normal_curr, normal_next,alpha); //smooth the orientation by simple average method
@@ -2048,13 +2051,16 @@ void GcodeGeneration::makeSmooth(PolygenMesh* normSurf, bool doCheckCollision)
 	}
 
 
-	
+	std::cout << notSmoothNum << "non-smooth points detected\n";
 	
 }
 
-void GcodeGeneration::removeIntitialCollision(bool eliminateCollision) {
+int GcodeGeneration::removeIntitialCollision(bool eliminateCollision) {
 
-	std::cout << "Removing initial collision\n";
+	std::cout << "Searching initial collision\n";
+	int collNum1 = 0;
+	int collNum2 = 0;
+
 	for (GLKPOSITION pos = polygenMesh_Waypoints->GetMeshList().GetHeadPosition(); pos;) {
 		QMeshPatch* wayPointPatch = (QMeshPatch*)polygenMesh_Waypoints->GetMeshList().GetNext(pos);
 		
@@ -2089,14 +2095,21 @@ void GcodeGeneration::removeIntitialCollision(bool eliminateCollision) {
 
 			float r = 0.5;
 			int itr = 0;
+			bool lockCount = false;
 			while (isCollidingNode(normal,curr_node,wayPointPatch)) {
 				std::cout << "Initial collision detected\n";
+				if (!lockCount) {
+					lockCount = true;
+					collNum1++;
+					collNum2++;
+				}
+
 				if (!eliminateCollision)
 				{
 					curr_node->isCollision = true;
 					break;
 				}
-
+				std::cout << "Removing initial collision \n";
 				if (itr >= 10)
 				{
 					std::cout << "Max iteration reached: No non-colliding normal found\n Layer: " << wayPointPatch->GetIndexNo() << " Node: " << curr_node->GetIndexNo() << std::endl;
@@ -2108,6 +2121,7 @@ void GcodeGeneration::removeIntitialCollision(bool eliminateCollision) {
 				{
 					curr_node->SetNormal(new_normal[0], new_normal[1], new_normal[2]);
 					curr_node->m_printNor = new_normal;
+					collNum2--;
 					break;
 				}
 
@@ -2116,6 +2130,7 @@ void GcodeGeneration::removeIntitialCollision(bool eliminateCollision) {
 				{
 					curr_node->SetNormal(new_normal[0], new_normal[1], new_normal[2]);
 					curr_node->m_printNor = new_normal;
+					collNum2--;
 					break;
 				}
 
@@ -2124,6 +2139,7 @@ void GcodeGeneration::removeIntitialCollision(bool eliminateCollision) {
 				{
 					curr_node->SetNormal(new_normal[0], new_normal[1], new_normal[2]);
 					curr_node->m_printNor = new_normal;
+					collNum2--;
 					break;
 				}
 
@@ -2132,6 +2148,7 @@ void GcodeGeneration::removeIntitialCollision(bool eliminateCollision) {
 				{
 					curr_node->SetNormal(new_normal[0], new_normal[1], new_normal[2]);
 					curr_node->m_printNor = new_normal;
+					collNum2--;
 					break;
 				}
 
@@ -2152,7 +2169,12 @@ void GcodeGeneration::removeIntitialCollision(bool eliminateCollision) {
 		
 	}
 
-	std::cout << "Removing initial collision COMPLETE\n";
+	std::cout << collNum1 << " collisions nodes detected\n";
+
+	std::cout << collNum2 << " collisions nodes unresolved\n";
+
+	return collNum1;
+
 
 }
 

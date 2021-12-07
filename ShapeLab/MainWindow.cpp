@@ -1324,8 +1324,15 @@ void MainWindow::doTimerGcodeMoving(){
 
 	if (newLayerFlag != 0.0) {
 		simuLayerInd++;
+		simuNodeInd = 0;
 		std::cout << "Simulating the printing of Layer " << simuLayerInd << std::endl;
 	}
+	
+		
+	simuNodeInd++;
+	
+
+	bool collisionState = false;
 
 	// Model waypoint show
 	for (GLKPOSITION waypointsPos = waypoints->GetMeshList().GetHeadPosition(); waypointsPos;) {
@@ -1337,12 +1344,28 @@ void MainWindow::doTimerGcodeMoving(){
 			}
 			else {
 				WayPointsPatch->drawThisPatch = true;
+				for (GLKPOSITION nodePos = WayPointsPatch->GetNodeList().GetHeadPosition(); nodePos;) {
+					QMeshNode* node = (QMeshNode*)WayPointsPatch->GetNodeList().GetNext(nodePos);
+					if ((node->GetIndexNo()==simuNodeInd) && node->isCollision) {
+						
+						collisionState = true;
+					}
+				}
 			}
 		}
 		// show before layers
 		else {
 			if (WayPointsPatch->GetIndexNo() <= simuLayerInd && WayPointsPatch->GetIndexNo() >= simuLayerInd_1st) {
 				WayPointsPatch->drawThisPatch = true;
+				if ((WayPointsPatch->GetIndexNo() == simuLayerInd)) {
+					for (GLKPOSITION nodePos = WayPointsPatch->GetNodeList().GetHeadPosition(); nodePos;) {
+						QMeshNode* node = (QMeshNode*)WayPointsPatch->GetNodeList().GetNext(nodePos);
+							if ((node->GetIndexNo() == simuNodeInd) && node->isCollision) {
+								
+								collisionState = true;
+							}
+					}
+				}
 			}
 			else {
 				WayPointsPatch->drawThisPatch = false; 	continue;
@@ -1364,35 +1387,43 @@ void MainWindow::doTimerGcodeMoving(){
 		for (GLKPOSITION Pos = cncPatch->GetNodeList().GetHeadPosition(); Pos;) {
 			QMeshNode* node = (QMeshNode*)cncPatch->GetNodeList().GetNext(Pos);
 
+			
+
 			Eigen::Vector3d cnc_Base_Position; node->GetCoord3D_last(cnc_Base_Position[0], cnc_Base_Position[1], cnc_Base_Position[2]);
 			Eigen::Vector3d cnc_New_Position;
 
 			if (cncPatch->patchName == "B-axis") {
 
+				cncPatch->isColliding = collisionState;
 				cnc_New_Position = _calPartGuesture(cnc_Base_Position, machine_X, machine_Y, machine_Z, machine_B, machine_C);
 			}
 
 			if (cncPatch->patchName == "C-axis") {
 
+				cncPatch->isColliding = collisionState;
 				cnc_New_Position = _calPartGuesture(cnc_Base_Position, machine_X, machine_Y, machine_Z, 0.0, machine_C);
 			}
 
 			if (cncPatch->patchName == "Z-axis") {
 
+				cncPatch->isColliding = collisionState;
 				cnc_New_Position = _calPartGuesture(cnc_Base_Position, machine_X, machine_Y, machine_Z, 0.0, 0.0);
 			}
 
 			if (cncPatch->patchName == "Y-axis") {
 
+				cncPatch->isColliding = collisionState;
 				cnc_New_Position = _calPartGuesture(cnc_Base_Position, machine_X, machine_Y, 0.0, 0.0, 0.0);
 			}
 
 			if (cncPatch->patchName == "X-axis") {
+				cncPatch->isColliding = collisionState;
 				cnc_New_Position = _calPartGuesture(cnc_Base_Position, machine_X, 0.0, 0.0, 0.0, 0.0);
 
 			}
 
 			if (cncPatch->patchName == "frame") {
+				cncPatch->isColliding = collisionState;
 				cnc_New_Position = _calPartGuesture(cnc_Base_Position, 0.0, 0.0, 0.0, 0.0, 0.0);
 			}
 

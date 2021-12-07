@@ -150,6 +150,10 @@ void PolygenMesh::_buildDrawShadeList(bool bVertexNormalShading)
             }
             glEnd();
         }
+
+
+
+        
     }
 
 
@@ -159,20 +163,55 @@ void PolygenMesh::_buildDrawShadeList(bool bVertexNormalShading)
         for (GLKPOSITION Pos = meshList.GetHeadPosition(); Pos != NULL; ) {
             QMeshPatch* mesh = (QMeshPatch*)(meshList.GetNext(Pos));
             float rr, gg, bb;
-
+            
             if (mesh->drawThisPatch == false) continue;
 
             glBegin(GL_TRIANGLES);
             for (GLKPOSITION PosFace = (mesh->GetFaceList()).GetHeadPosition(); PosFace != NULL;) {
                 QMeshFace* face = (QMeshFace*)((mesh->GetFaceList()).GetNext(PosFace));
 
-                glColor3f(0.8, 0.8, 0.8);
+                //glColor3f(0.8, 0.8, 0.8);
+                
 
                 if (this->getModelName() == "PrintPlatform")    glColor3f(0.3, 0.3, 0.3);
-                if (mesh->patchName == "X_axis")                glColor3f(0.2, 0.5, 0.8);
-                if (mesh->patchName == "Y_axis")                glColor3f(0.5, 0.5, 0.5);
-                if (mesh->patchName == "Z_axis")                glColor3f(0.6, 0.6, 0.6);
-                if (mesh->patchName == "B_axis")                glColor3f(0.5, 0.5, 0.5);
+                if (mesh->patchName == "X-axis") {
+                 
+                    if (mesh->isColliding)
+                    {
+                        glColor3f(1.0, 0.0, 0.0);
+                       
+                    }
+                    else
+                        glColor3f(0.5, 0.5, 0.5);
+                }
+                if (mesh->patchName == "Y-axis") {
+                    if (mesh->isColliding)
+                    {
+                        glColor3f(1.0, 0.0, 0.0);
+                       
+                    }
+                    else
+                        glColor3f(0.5, 0.5, 0.5);
+                }
+                if (mesh->patchName == "Z-axis") {
+                    if (mesh->isColliding)
+                    {
+                        glColor3f(1.0, 0.0, 0.0);
+                       
+                    }
+                    else
+                        glColor3f(0.5, 0.5, 0.5);
+                }
+                if (mesh->patchName == "B-axis") {
+                    if(mesh->isColliding)
+                    {
+                        std::cout << "RED\n";
+                        glColor3f(1.0, 0.0, 0.0);
+                        
+                    }
+                    else
+                    glColor3f(0.5, 0.5, 0.5);
+                }
                 if (mesh->patchName == "base")                  glColor3f(0.2, 0.2, 0.2);
                 if (this->getModelName() == "ExtruderHead")     glColor3f(0.8, 0.8, 0.8);
 

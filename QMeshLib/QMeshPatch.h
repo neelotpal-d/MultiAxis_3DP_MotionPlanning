@@ -81,6 +81,10 @@ public:
 	std::string patchName = "";
 	QMeshPatch* rootPatch_jumpPatch = NULL;// the father Waypoint patch of each jump section 
 
+
+	/*For CNC cutter/end-effector pathces only; to show collision*/
+	bool isColliding = false;
+
 private:
 	int indexno;			// start from 1 to n  
 
